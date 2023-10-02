@@ -1,16 +1,22 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Home from "./components/Home";
 import Gameboard from "./components/Gameboard";
+import { AppContext } from "./components/AppContext";
 
 export default function App() {
+  const [started, setStarted] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <Header />
-      <Gameboard />
-      <Footer />
-    </View>
+    <AppContext.Provider value={{ started, setStarted }}>
+      <View style={styles.container}>
+        <Header />
+        {started ? <Gameboard /> : <Home />}
+        <Footer />
+      </View>
+    </AppContext.Provider>
   );
 }
 
