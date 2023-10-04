@@ -50,7 +50,9 @@ export default Home = ({ navigation }) => {
         ) : (
           <>
             <Text>Rules of the game...</Text>
-            <Text multiline="true"></Text>
+            <Text multiline="true">
+              Tähän tulee kappale ja tarvittaessa toinen
+            </Text>
             <Text>Good luck, {playerName}</Text>
             <Pressable
               onPress={() =>
