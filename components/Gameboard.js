@@ -10,7 +10,9 @@ import {
   NBR_OF_THROWS_LEFT,
   NBR_OF_DICES,
   MAX_SPOT,
+  SCOREBOARD_KEY,
 } from "../constants/Game";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 let board = [];
 
@@ -33,6 +35,9 @@ export default function Gameboard({ navigation, route }) {
   const [dicePointsTotal, setDicePointsTotal] = useState(
     new Array(MAX_SPOT).fill(0)
   );
+
+  // tulostaulun pisteet
+  const [scores, setScores] = useState([]);
 
   useEffect(() => {
     if (playerName === "" && route.params?.player) {
@@ -60,87 +65,170 @@ export default function Gameboard({ navigation, route }) {
   for (let i = 0; i < MAX_SPOT; i++) {
     pointsRow.push(
       <Col key={"pointsRow" + i}>
-        <Text key={"pointsRow" + i}></Text>
+        <Text key={"pointsRow" + i}>{diceSpots[i]}</Text>
       </Col>
     );
   }
 
   const pointsToSelectRow = [];
-  for (let i = 0; i < NBR_OF_DICES; i++) {
+  for (let i = 0; i < MAX_SPOT; i++) {
     pointsToSelectRow.push(
       <Col key={"buttonsRow" + i}>
-        <Pressable key={"buttonsRow" + i}>
+        <Pressable key={"buttonsRow" + i} onPress={() => selectDicePoints}>
           <MaterialCommunityIcons
             name={"numeric-" + (i + 1) + "-circle"}
             key={"buttonsRow" + i}
             size={35}
-            color={getDiceColor(i)}
+            color={getDicePointsColor(i)}
           ></MaterialCommunityIcons>
         </Pressable>
       </Col>
     );
   }
 
+  const selectDicePoints = (i) => {
+    if (nbrOfThrowsLeft === 0) {
+      let selectedPoints = [...selectedDicePoints];
+      let points = [...dicePointsTotal];
+
+      if (!selectedPoints[i]) {
+        selectedPoints[i] = true;
+
+        let nbrOfDices = diceSpots.reduce(
+          (total, x) => (x === i + 1 ? total + 1 : total),
+          0
+        );
+
+        points[i] = nbrOfDices * (i + 1);
+      } else {
+        setStatus("laitoit jo pisteet");
+      }
+      setDicePointsTotal(points);
+      setSelectedDicePoints(selectedPoints);
+      return points[i];
+    } else {
+      setStatus("Heitä kaikki eka");
+    }
+  };
+
   function getSpotTotal(i) {
     return dicePointsTotal[i];
   }
 
+  // const selectDice = (i) => {
+  //   if (nbrOfThrowsLeft < NBR_OF_THROWS_LEFT) {
+  //     let dices = [...selectedDices];
+  //     dices[i] = selectedDices[i] ? false : true;
+  //     setSelectedDices(dices);
+  //   } else {
+  //     setStatus("You have to throw dices first");
+  //   }
+  // };
+
   const selectDice = (i) => {
-    if (nbrOfThrowsLeft < NBR_OF_THROWS_LEFT) {
-      let dices = [...selectedDices];
-      dices[i] = selectedDices[i] ? false : true;
-      setSelectedDices(dices);
-    } else {
-      setStatus("You have to throw dices first");
-    }
+    let dices = [...selectedDices];
+    dices[i] = selectedDices[i] ? false : true;
+    setSelectedDices(dices);
   };
 
   function getDiceColor(i) {
     return selectedDices[i] ? "black" : "steelblue";
   }
 
-  // useEffect(() => {
-  //   checkWinner();
-  //   if (nbrOfThrowsLeft === NBR_OF_THROWS) {
-  //     setStatus("Game has not started");
-  //   }
-  //   if (nbrOfThrowsLeft < 0) {
-  //     setNbrOfThrowsLeft(NBR_OF_THROWS - 1);
-  //   }
-  // }, [nbrOfThrowsLeft]);
+  function getDicePointsColor(i) {
+    return selectedDicePoints[i] && !gameEndStatus ? "black" : "steelblue";
+  }
 
-  // const checkWinner = () => {
-  //   if (board.every((val, i, arr) => val === arr[0]) && nbrOfThrowsLeft > 0) {
-  //     setStatus("You won");
-  //   } else if (
-  //     board.every((val, i, arr) => val === arr[0]) &&
-  //     nbrOfThrowsLeft === 0
-  //   ) {
-  //     setStatus("You won, game over");
-  //     setSelectedDices(new Array(NBR_OF_DICES).fill(false));
-  //   } else if (nbrOfThrowsLeft === 0) {
-  //     setStatus("Game over");
-  //     setSelectedDices(new Array(NBR_OF_DICES).fill(false));
-  //   } else {
-  //     setStatus("Keep on throwing");
-  //   }
-  // };
+  useEffect(() => {
+    checkWinner();
+    if (nbrOfThrowsLeft === NBR_OF_THROWS) {
+      setStatus("Game has not started");
+    }
+    if (nbrOfThrowsLeft > 0) {
+      setNbrOfThrowsLeft(NBR_OF_THROWS - 1);
+    }
+  }, [nbrOfThrowsLeft]);
 
-  // const throwDices = () => {
-  //   for (let i = 0; i < NBR_OF_DICES; i++) {
-  //     if (!selectedDices[i]) {
-  //       let randomNumber = Math.floor(Math.random() * 6 + 1);
-  //       board[i] = "dice-" + randomNumber;
-  //     }
-  //   }
-  //   setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
-  // };
+  const checkWinner = () => {
+    //setStatus("You won");
+    if (nbrOfThrowsLeft <= 0) {
+      setStatus("Select points");
+    }
+  };
+
+  const savePlayerPoints = async () => {
+    const newKey = scores.length + 1;
+
+    const playerPoints = {
+      key: newKey,
+      name: playerName,
+      date: "date",
+      time: "aika",
+      points: 0, // yhteispisteet, lisää laskenta itse ja bonuspisteet
+    };
+
+    try {
+      const newScore = [...scores, playerPoints];
+      const jsonValue = JSON.stringify(newScore);
+      await AsyncStorage.setItem(SCOREBOARD_KEY, jsonValue);
+    } catch (e) {
+      console.log("virhe tallennuksessa" + e);
+    }
+  };
+
+  const getScoreboardData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(SCOREBOARD_KEY);
+      if (jsonValue !== null) {
+        let tmpScores = JSON.parse(jsonValue);
+        setScores(tmpScores);
+      }
+    } catch (e) {
+      console.log("Read error" + e);
+    }
+  };
+
+  const throwDices = () => {
+    if (nbrOfThrowsLeft == 0 && !gameEndStatus) {
+      setStatus("Valitse pisteet eka");
+    } else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
+      setGameEndStatus(false);
+      diceSpots.fill(0);
+      dicePointsTotal.fill(0);
+    }
+
+    let spots = [...diceSpots];
+
+    for (let i = 0; i < NBR_OF_DICES; i++) {
+      if (!selectedDices[i]) {
+        let randomNumber = Math.floor(Math.random() * 6 + 1);
+        board[i] = "dice-" + randomNumber;
+        spots[i] = randomNumber;
+      }
+    }
+    setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
+    console.log(nbrOfThrowsLeft);
+    setDiceSpots(spots);
+  };
 
   return (
     <>
       <Header />
+
       <View style={styles.gameboard}>
         <Container fluid>
+          <Row>
+            <MaterialCommunityIcons
+              name="dice-multiple"
+              size={60}
+            ></MaterialCommunityIcons>
+          </Row>
+          <Row>
+            <Text>Throws left: {nbrOfThrowsLeft}</Text>
+          </Row>
+          <Row>
+            <Text>{status}</Text>
+          </Row>
           <Row>{dicesRow}</Row>
         </Container>
         <Container fluid>
@@ -149,6 +237,9 @@ export default function Gameboard({ navigation, route }) {
         <Container fluid>
           <Row>{pointsToSelectRow}</Row>
         </Container>
+        <Pressable style={styles.button} onPress={throwDices}>
+          <Text style={styles.buttonText}>Throw dices</Text>
+        </Pressable>
         <Text>Player: {playerName}</Text>
       </View>
       <Footer />
