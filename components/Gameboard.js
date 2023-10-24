@@ -45,6 +45,14 @@ export default function Gameboard({ navigation, route }) {
     }
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getScoreboardData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   const dicesRow = [];
   for (let i = 0; i < NBR_OF_DICES; i++) {
     dicesRow.push(
@@ -65,7 +73,7 @@ export default function Gameboard({ navigation, route }) {
   for (let i = 0; i < MAX_SPOT; i++) {
     pointsRow.push(
       <Col key={"pointsRow" + i}>
-        <Text key={"pointsRow" + i}>{diceSpots[i]}</Text>
+        <Text key={"pointsRow" + i}>{getSpotTotal(i)}</Text>
       </Col>
     );
   }
@@ -74,7 +82,7 @@ export default function Gameboard({ navigation, route }) {
   for (let i = 0; i < MAX_SPOT; i++) {
     pointsToSelectRow.push(
       <Col key={"buttonsRow" + i}>
-        <Pressable key={"buttonsRow" + i} onPress={() => selectDicePoints}>
+        <Pressable key={"buttonsRow" + i} onPress={() => selectDicePoints(i)}>
           <MaterialCommunityIcons
             name={"numeric-" + (i + 1) + "-circle"}
             key={"buttonsRow" + i}
@@ -115,8 +123,9 @@ export default function Gameboard({ navigation, route }) {
     return dicePointsTotal[i];
   }
 
+  // tää pitäis olla oikeasti eli tuo ehto, mutta ei toiminut jostain syystä
   // const selectDice = (i) => {
-  //   if (nbrOfThrowsLeft < NBR_OF_THROWS_LEFT) {
+  //   if (nbrOfThrowsLeft < NBR_OF_THROWS_LEFT && !gameEndStatus) {
   //     let dices = [...selectedDices];
   //     dices[i] = selectedDices[i] ? false : true;
   //     setSelectedDices(dices);
@@ -131,6 +140,12 @@ export default function Gameboard({ navigation, route }) {
     setSelectedDices(dices);
   };
 
+  // const selectDice = (i) => {
+  //   let dices = [...selectedDices];
+  //   dices[i] = selectedDices[i] ? false : true;
+  //   setSelectedDices(dices);
+  // };
+
   function getDiceColor(i) {
     return selectedDices[i] ? "black" : "steelblue";
   }
@@ -139,22 +154,22 @@ export default function Gameboard({ navigation, route }) {
     return selectedDicePoints[i] && !gameEndStatus ? "black" : "steelblue";
   }
 
-  useEffect(() => {
-    checkWinner();
-    if (nbrOfThrowsLeft === NBR_OF_THROWS) {
-      setStatus("Game has not started");
-    }
-    if (nbrOfThrowsLeft > 0) {
-      setNbrOfThrowsLeft(NBR_OF_THROWS - 1);
-    }
-  }, [nbrOfThrowsLeft]);
+  // useEffect(() => {
+  //   checkWinner();
+  //   if (nbrOfThrowsLeft === NBR_OF_THROWS) {
+  //     setStatus("Game has not started");
+  //   }
+  //   if (nbrOfThrowsLeft > 0) {
+  //     setNbrOfThrowsLeft(NBR_OF_THROWS - 1);
+  //   }
+  // }, [nbrOfThrowsLeft]);
 
-  const checkWinner = () => {
-    //setStatus("You won");
-    if (nbrOfThrowsLeft <= 0) {
-      setStatus("Select points");
-    }
-  };
+  // const checkWinner = () => {
+  //   //setStatus("You won");
+  //   if (nbrOfThrowsLeft <= 0) {
+  //     setStatus("Select points");
+  //   }
+  // };
 
   const savePlayerPoints = async () => {
     const newKey = scores.length + 1;
@@ -191,6 +206,7 @@ export default function Gameboard({ navigation, route }) {
   const throwDices = () => {
     if (nbrOfThrowsLeft == 0 && !gameEndStatus) {
       setStatus("Valitse pisteet eka");
+      return 1;
     } else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
       setGameEndStatus(false);
       diceSpots.fill(0);
@@ -207,8 +223,8 @@ export default function Gameboard({ navigation, route }) {
       }
     }
     setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
-    console.log(nbrOfThrowsLeft);
     setDiceSpots(spots);
+    setStatus("Select points and throw dices again");
   };
 
   return (
@@ -237,8 +253,11 @@ export default function Gameboard({ navigation, route }) {
         <Container fluid>
           <Row>{pointsToSelectRow}</Row>
         </Container>
-        <Pressable style={styles.button} onPress={throwDices}>
+        <Pressable style={styles.button} onPress={() => throwDices()}>
           <Text style={styles.buttonText}>Throw dices</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => savePlayerPoints()}>
+          <Text style={styles.buttonText}>Tallenna</Text>
         </Pressable>
         <Text>Player: {playerName}</Text>
       </View>

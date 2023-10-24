@@ -1,11 +1,6 @@
-import { useState } from "react";
-import { ScrollView, View } from "react-native";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import Home from "./components/Home";
 import Gameboard from "./components/Gameboard";
 import Scoreboard from "./components/Scoreboard";
-import { AppContext } from "./components/AppContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -50,17 +45,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-// export default function App() {
-//   const [started, setStarted] = useState(false);
-
-//   return (
-//     <AppContext.Provider value={{ started, setStarted }}>
-//       <View style={styles.container}>
-//         <Header />
-//         {started ? <Gameboard /> : <Home />}
-//         <Footer />
-//       </View>
-//     </AppContext.Provider>
-//   );
-// }
