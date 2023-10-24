@@ -13,6 +13,7 @@ import {
   SCOREBOARD_KEY,
 } from "../constants/Game";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDate, getTime } from "./common/functions";
 
 let board = [];
 
@@ -173,12 +174,11 @@ export default function Gameboard({ navigation, route }) {
 
   const savePlayerPoints = async () => {
     const newKey = scores.length + 1;
-
     const playerPoints = {
       key: newKey,
       name: playerName,
-      date: "date",
-      time: "aika",
+      date: getDate(),
+      time: getTime(),
       points: 0, // yhteispisteet, lisää laskenta itse ja bonuspisteet
     };
 
