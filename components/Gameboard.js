@@ -7,7 +7,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import {
   NBR_OF_THROWS,
-  NBR_OF_THROWS_LEFT,
   NBR_OF_DICES,
   MAX_SPOT,
   SCOREBOARD_KEY,
@@ -54,6 +53,7 @@ export default function Gameboard({ navigation, route }) {
     return unsubscribe;
   }, [navigation]);
 
+  // nopat
   const dicesRow = [];
   for (let i = 0; i < NBR_OF_DICES; i++) {
     dicesRow.push(
@@ -70,6 +70,7 @@ export default function Gameboard({ navigation, route }) {
     );
   }
 
+  // pisteet
   const pointsRow = [];
   for (let i = 0; i < MAX_SPOT; i++) {
     pointsRow.push(
@@ -79,6 +80,7 @@ export default function Gameboard({ navigation, route }) {
     );
   }
 
+  // pallerot
   const pointsToSelectRow = [];
   for (let i = 0; i < MAX_SPOT; i++) {
     pointsToSelectRow.push(
@@ -95,6 +97,15 @@ export default function Gameboard({ navigation, route }) {
     );
   }
 
+  function getDiceColor(i) {
+    return selectedDices[i] ? "black" : "steelblue";
+  }
+
+  function getDicePointsColor(i) {
+    return selectedDicePoints[i] && !gameEndStatus ? "black" : "steelblue";
+  }
+
+  //////////////////////////////////
   const selectDicePoints = (i) => {
     if (nbrOfThrowsLeft === 0) {
       let selectedPoints = [...selectedDicePoints];
@@ -114,6 +125,8 @@ export default function Gameboard({ navigation, route }) {
       }
       setDicePointsTotal(points);
       setSelectedDicePoints(selectedPoints);
+      setGameEndStatus(false);
+      setNbrOfThrowsLeft(3);
       return points[i];
     } else {
       setStatus("Heitä kaikki eka");
@@ -136,41 +149,32 @@ export default function Gameboard({ navigation, route }) {
   // };
 
   const selectDice = (i) => {
-    let dices = [...selectedDices];
-    dices[i] = selectedDices[i] ? false : true;
-    setSelectedDices(dices);
+    if (nbrOfThrowsLeft < NBR_OF_THROWS) {
+      let dices = [...selectedDices];
+      dices[i] = selectedDices[i] ? false : true;
+      setSelectedDices(dices);
+    }
   };
 
-  // const selectDice = (i) => {
-  //   let dices = [...selectedDices];
-  //   dices[i] = selectedDices[i] ? false : true;
-  //   setSelectedDices(dices);
-  // };
+  // tarkistaa onko peli loppu joka kerta kun heittojen määrä vaihtuu
+  // vois olla ehkä myös gameendstatus
+  useEffect(() => {
+    checkWinner();
+  }, [nbrOfThrowsLeft]);
 
-  function getDiceColor(i) {
-    return selectedDices[i] ? "black" : "steelblue";
-  }
+  const checkWinner = () => {
+    // jos kaikki pallurat on valittu, peli loppuu
+    // laske pisteet
+    // tallenna pisteet
+    // setStatus("Game over");
+  };
 
-  function getDicePointsColor(i) {
-    return selectedDicePoints[i] && !gameEndStatus ? "black" : "steelblue";
-  }
-
-  // useEffect(() => {
-  //   checkWinner();
-  //   if (nbrOfThrowsLeft === NBR_OF_THROWS) {
-  //     setStatus("Game has not started");
-  //   }
-  //   if (nbrOfThrowsLeft > 0) {
-  //     setNbrOfThrowsLeft(NBR_OF_THROWS - 1);
-  //   }
-  // }, [nbrOfThrowsLeft]);
-
-  // const checkWinner = () => {
-  //   //setStatus("You won");
-  //   if (nbrOfThrowsLeft <= 0) {
-  //     setStatus("Select points");
-  //   }
-  // };
+  const calculatePoints = () => {
+    // lasketaan pisteet
+    let totalPoints = 1;
+    // jos yli jonkun, lisää bonus
+    return totalPoints;
+  };
 
   const savePlayerPoints = async () => {
     const newKey = scores.length + 1;
@@ -179,7 +183,7 @@ export default function Gameboard({ navigation, route }) {
       name: playerName,
       date: getDate(),
       time: getTime(),
-      points: 0, // yhteispisteet, lisää laskenta itse ja bonuspisteet
+      points: calculatePoints(), // yhteispisteet, lisää laskenta itse ja bonuspisteet
     };
 
     try {
@@ -207,8 +211,9 @@ export default function Gameboard({ navigation, route }) {
     if (nbrOfThrowsLeft == 0 && !gameEndStatus) {
       setStatus("Valitse pisteet eka");
       return 1;
+      // niin kauan kun on true, niin heittelee noita ja kun on false taas niin peli loppuu
     } else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
-      setGameEndStatus(false);
+      setGameEndStatus(true);
       diceSpots.fill(0);
       dicePointsTotal.fill(0);
     }
@@ -224,7 +229,11 @@ export default function Gameboard({ navigation, route }) {
     }
     setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
     setDiceSpots(spots);
-    setStatus("Select points and throw dices again");
+    setStatus("Heitä uudelleen");
+
+    if (nbrOfThrowsLeft == 1) {
+      setStatus("Select points and throw dices again");
+    }
   };
 
   return (
@@ -239,13 +248,25 @@ export default function Gameboard({ navigation, route }) {
               size={60}
             ></MaterialCommunityIcons>
           </Row>
+
+          <Row>{dicesRow}</Row>
           <Row>
             <Text>Throws left: {nbrOfThrowsLeft}</Text>
           </Row>
           <Row>
             <Text>{status}</Text>
           </Row>
-          <Row>{dicesRow}</Row>
+          <Row>
+            <Pressable style={styles.button} onPress={() => throwDices()}>
+              <Text style={styles.buttonText}>Throw dices</Text>
+            </Pressable>
+          </Row>
+          <Row>
+            <Text>Total: {dicePointsTotal}</Text>
+          </Row>
+          <Row>
+            <Text>Bonusinfo</Text>
+          </Row>
         </Container>
         <Container fluid>
           <Row>{pointsRow}</Row>
@@ -253,9 +274,7 @@ export default function Gameboard({ navigation, route }) {
         <Container fluid>
           <Row>{pointsToSelectRow}</Row>
         </Container>
-        <Pressable style={styles.button} onPress={() => throwDices()}>
-          <Text style={styles.buttonText}>Throw dices</Text>
-        </Pressable>
+
         <Pressable style={styles.button} onPress={() => savePlayerPoints()}>
           <Text style={styles.buttonText}>Tallenna</Text>
         </Pressable>

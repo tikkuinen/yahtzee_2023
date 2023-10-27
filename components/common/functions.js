@@ -3,10 +3,6 @@ export const getDate = () => {
   const day = rawDate.getUTCDate();
   const month = rawDate.getUTCMonth() + 1;
   const year = rawDate.getUTCFullYear();
-  const hours = rawDate.getUTCHours();
-  const minutes = rawDate.getUTCMinutes();
-  const seconds = rawDate.getUTCSeconds();
-
   return `${day}.${month}.${year}`;
 };
 export const getTime = () => {
