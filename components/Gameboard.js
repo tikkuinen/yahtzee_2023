@@ -106,6 +106,20 @@ export default function Gameboard({ navigation, route }) {
   }
 
   //////////////////////////////////
+
+  // noppien valinnat pitää nollata kun noppaa heitetään uudelleen, mutta vasta sen jälkeen kun heitot ovat kaikki kuluneet
+  // pelin uudelleen aloitus
+  // sorttaa scoreboard
+
+  // keskitä nappulat
+  // fontit, koot tms.
+  // omat värit
+  // Tyhjennä -nappi (ei pakollinen)
+  // muokkaa scoreboardin columnit että näkyy
+  // joku otsikko tms. hienous sinne scoreboardille
+
+  // bonuksen laskenta
+
   const selectDicePoints = (i) => {
     if (nbrOfThrowsLeft === 0) {
       let selectedPoints = [...selectedDicePoints];
@@ -162,16 +176,26 @@ export default function Gameboard({ navigation, route }) {
     checkWinner();
   }, [nbrOfThrowsLeft]);
 
+  const allTrue = selectedDicePoints.every(function (element) {
+    return element === true;
+  });
+
   const checkWinner = () => {
     // jos kaikki pallurat on valittu, peli loppuu
-    // laske pisteet
-    // tallenna pisteet
-    // setStatus("Game over");
+    if (allTrue) {
+      // kaikki on valittu
+      setStatus("Game over. All points selected.");
+      // laske pisteet
+      calculatePoints();
+      savePlayerPoints();
+    }
   };
 
   const calculatePoints = () => {
-    // lasketaan pisteet
-    let totalPoints = 1;
+    // käy läpi dicepointstotal ja laske ne yhteen
+    let totalPoints = dicePointsTotal.reduce(function (sum, currentElement) {
+      return sum + currentElement;
+    }, 0);
     // jos yli jonkun, lisää bonus
     return totalPoints;
   };
@@ -183,7 +207,7 @@ export default function Gameboard({ navigation, route }) {
       name: playerName,
       date: getDate(),
       time: getTime(),
-      points: calculatePoints(), // yhteispisteet, lisää laskenta itse ja bonuspisteet
+      points: calculatePoints(),
     };
 
     try {
@@ -262,7 +286,7 @@ export default function Gameboard({ navigation, route }) {
             </Pressable>
           </Row>
           <Row>
-            <Text>Total: {dicePointsTotal}</Text>
+            <Text>Total: {calculatePoints()}</Text>
           </Row>
           <Row>
             <Text>Bonusinfo</Text>

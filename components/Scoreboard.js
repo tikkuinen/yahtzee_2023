@@ -39,6 +39,8 @@ export default function Scoreboard({ navigation }) {
     }
   };
 
+  // pitää sortata isoimmasta pienimpään
+
   return (
     <>
       <Header />
@@ -70,6 +72,7 @@ export default function Scoreboard({ navigation }) {
           )
         )}
       </View>
+
       <Pressable onPress={() => clearScoreboard()}>
         <Text>Tyhjennä</Text>
       </Pressable>
