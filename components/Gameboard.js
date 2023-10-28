@@ -21,6 +21,7 @@ export default function Gameboard({ navigation, route }) {
   const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState(NBR_OF_THROWS);
   const [status, setStatus] = useState("Throw dices");
   const [gameEndStatus, setGameEndStatus] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   // Ovatko nopat kiinnitetty
   const [selectedDices, setSelectedDices] = useState(
     new Array(NBR_OF_DICES).fill(false)
@@ -106,9 +107,6 @@ export default function Gameboard({ navigation, route }) {
   }
 
   //////////////////////////////////
-
-  // noppien valinnat pitää nollata kun noppaa heitetään uudelleen, mutta vasta sen jälkeen kun heitot ovat kaikki kuluneet
-  // pelin uudelleen aloitus
   // sorttaa scoreboard
 
   // keskitä nappulat
@@ -118,6 +116,7 @@ export default function Gameboard({ navigation, route }) {
   // muokkaa scoreboardin columnit että näkyy
   // joku otsikko tms. hienous sinne scoreboardille
 
+  // ei sais valita vääriä pisteitä eli ei niitä mitä ei ole nopista valittu, korjaa
   // bonuksen laskenta
 
   const selectDicePoints = (i) => {
@@ -188,7 +187,18 @@ export default function Gameboard({ navigation, route }) {
       // laske pisteet
       calculatePoints();
       savePlayerPoints();
+      // näytä restart-nappula
+      setIsVisible(true);
     }
+  };
+
+  const restart = () => {
+    // resetoi kaikki, ja tallentaa mut ei näytä sitten loppupisteitä ja status on game over
+    setStatus("Throw dices");
+    dicePointsTotal.fill(0);
+    selectedDices.fill(false);
+    selectedDicePoints.fill(false);
+    setIsVisible(false);
   };
 
   const calculatePoints = () => {
@@ -280,16 +290,20 @@ export default function Gameboard({ navigation, route }) {
           </Row>
 
           <Row>{dicesRow}</Row>
-          <Row>
-            <Text>Throws left: {nbrOfThrowsLeft}</Text>
-          </Row>
+          <Row>{!isVisible && <Text>Throws left: {nbrOfThrowsLeft}</Text>}</Row>
           <Row>
             <Text>{status}</Text>
           </Row>
           <Row>
-            <Pressable style={styles.button} onPress={() => throwDices()}>
-              <Text style={styles.buttonText}>Throw dices</Text>
-            </Pressable>
+            {isVisible ? (
+              <Pressable style={styles.button} onPress={() => restart()}>
+                <Text style={styles.buttonText}>Play again</Text>
+              </Pressable>
+            ) : (
+              <Pressable style={styles.button} onPress={() => throwDices()}>
+                <Text style={styles.buttonText}>Throw dices</Text>
+              </Pressable>
+            )}
           </Row>
           <Row>
             <Text>Total: {calculatePoints()}</Text>
@@ -305,9 +319,9 @@ export default function Gameboard({ navigation, route }) {
           <Row>{pointsToSelectRow}</Row>
         </Container>
 
-        <Pressable style={styles.button} onPress={() => savePlayerPoints()}>
+        {/* <Pressable style={styles.button} onPress={() => savePlayerPoints()}>
           <Text style={styles.buttonText}>Tallenna</Text>
-        </Pressable>
+        </Pressable> */}
         <Text>Player: {playerName}</Text>
       </View>
       <Footer />
