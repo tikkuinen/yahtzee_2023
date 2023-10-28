@@ -232,10 +232,16 @@ export default function Gameboard({ navigation, route }) {
   };
 
   const throwDices = () => {
+    // tämä nollaa noppien valinnat kun uusi heitto tulee, testaa toimiiko ihan oikein
+    if (nbrOfThrowsLeft == 3) {
+      selectedDices.fill(false);
+    }
+
     if (nbrOfThrowsLeft == 0 && !gameEndStatus) {
       setStatus("Valitse pisteet eka");
       return 1;
       // niin kauan kun on true, niin heittelee noita ja kun on false taas niin peli loppuu
+      // ja mitä tää oikeastaan tekee
     } else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
       setGameEndStatus(true);
       diceSpots.fill(0);
