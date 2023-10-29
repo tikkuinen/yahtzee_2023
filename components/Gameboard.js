@@ -10,11 +10,15 @@ import {
   NBR_OF_DICES,
   MAX_SPOT,
   SCOREBOARD_KEY,
+  BONUS_POINTS,
+  BONUS_POINTS_LIMIT,
 } from "../constants/Game";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDate, getTime } from "./common/functions";
 
 let board = [];
+
+// play againin jälkeen resetoi että on gam end false
 
 export default function Gameboard({ navigation, route }) {
   const [playerName, setPlayerName] = useState("");
@@ -108,15 +112,6 @@ export default function Gameboard({ navigation, route }) {
       : styles.diceColorUnselected;
   }
 
-  //////////////////////////////////
-
-  // fontit
-  // boldaatko pisteet?
-  // joku otsikko tms. hienous sinne scoreboardille ja se ikoni
-
-  // ei sais valita vääriä pisteitä eli ei niitä mitä ei ole nopista valittu, korjaa
-  // bonuksen laskenta
-
   const selectDicePoints = (i) => {
     if (nbrOfThrowsLeft === 0) {
       let selectedPoints = [...selectedDicePoints];
@@ -137,6 +132,7 @@ export default function Gameboard({ navigation, route }) {
       setDicePointsTotal(points);
       setSelectedDicePoints(selectedPoints);
       setGameEndStatus(false);
+      selectedDices.fill(false);
       setNbrOfThrowsLeft(3);
       return points[i];
     } else {
@@ -147,17 +143,6 @@ export default function Gameboard({ navigation, route }) {
   function getSpotTotal(i) {
     return dicePointsTotal[i];
   }
-
-  // tää pitäis olla oikeasti eli tuo ehto, mutta ei toiminut jostain syystä
-  // const selectDice = (i) => {
-  //   if (nbrOfThrowsLeft < NBR_OF_THROWS_LEFT && !gameEndStatus) {
-  //     let dices = [...selectedDices];
-  //     dices[i] = selectedDices[i] ? false : true;
-  //     setSelectedDices(dices);
-  //   } else {
-  //     setStatus("You have to throw dices first");
-  //   }
-  // };
 
   const selectDice = (i) => {
     if (nbrOfThrowsLeft < NBR_OF_THROWS) {
@@ -170,7 +155,6 @@ export default function Gameboard({ navigation, route }) {
   };
 
   // tarkistaa onko peli loppu joka kerta kun heittojen määrä vaihtuu
-  // vois olla ehkä myös gameendstatus
   useEffect(() => {
     checkEnd();
   }, [nbrOfThrowsLeft]);
@@ -195,12 +179,12 @@ export default function Gameboard({ navigation, route }) {
 
   const restart = () => {
     // resetoi kaikki, ja tallentaa mut ei näytä sitten loppupisteitä ja status on game over
+    setGameEndStatus(false);
     setStatus("Throw dices");
     dicePointsTotal.fill(0);
     selectedDices.fill(false);
     selectedDicePoints.fill(false);
     setIsVisible(false);
-    setGameEndStatus(false);
   };
 
   const calculatePoints = () => {
@@ -208,7 +192,9 @@ export default function Gameboard({ navigation, route }) {
     let totalPoints = dicePointsTotal.reduce(function (sum, currentElement) {
       return sum + currentElement;
     }, 0);
-    // jos yli jonkun, lisää bonus
+    totalPoints > BONUS_POINTS_LIMIT
+      ? (totalPoints = totalPoints + BONUS_POINTS)
+      : totalPoints;
     return totalPoints;
   };
 
@@ -253,14 +239,7 @@ export default function Gameboard({ navigation, route }) {
     if (nbrOfThrowsLeft == 0) {
       setStatus("Select points first!");
       return 1;
-      // niin kauan kun on true, niin heittelee noita ja kun on false taas niin peli loppuu
-      // ja mitä tää oikeastaan tekee
     }
-    // else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
-    //   setGameEndStatus(true);
-    //   diceSpots.fill(0);
-    //   dicePointsTotal.fill(0);
-    // }
 
     let spots = [...diceSpots];
 
@@ -320,9 +299,12 @@ export default function Gameboard({ navigation, route }) {
             <Row style={styles.textRow}>
               <Text style={styles.statusText}>Total: {calculatePoints()}</Text>
             </Row>
-            {/* <Row>
-            <Text>Bonusinfo</Text>
-          </Row> */}
+            <Row style={styles.textRow}>
+              <Text>
+                You are {BONUS_POINTS_LIMIT - calculatePoints()} points away
+                from bonus.
+              </Text>
+            </Row>
             <Row style={styles.pointsRow}>{pointsRow}</Row>
             <Row style={styles.selectedPointRow}>{pointsToSelectRow}</Row>
             <Row style={styles.textRow}>

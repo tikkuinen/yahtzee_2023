@@ -9,6 +9,5 @@ export const getTime = () => {
   let rawDate = new Date();
   const hours = rawDate.getUTCHours();
   const minutes = rawDate.getUTCMinutes();
-  const seconds = rawDate.getUTCSeconds();
   return `${hours}:${minutes}`;
 };

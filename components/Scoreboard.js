@@ -9,7 +9,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import styles from "../styles/style";
 import { Container, Row } from "react-native-flex-grid";
-import style from "../styles/style";
 
 export default function Scoreboard({ navigation }) {
   const [scores, setScores] = useState([]);
@@ -55,7 +54,7 @@ export default function Scoreboard({ navigation }) {
         <Container>
           <Row style={styles.row}>
             <MaterialCommunityIcons
-              name="dice-multiple"
+              name="seal"
               size={90}
             ></MaterialCommunityIcons>
           </Row>
@@ -82,7 +81,7 @@ export default function Scoreboard({ navigation }) {
                         <Text style={styles.statusText}>{player.time}</Text>
                       </DataTable.Cell>
                       <DataTable.Cell numeric>
-                        <Text style={styles.statusText}>{player.points}</Text>
+                        <Text style={styles.boldedPoints}>{player.points}</Text>
                       </DataTable.Cell>
                     </DataTable.Row>
                   )

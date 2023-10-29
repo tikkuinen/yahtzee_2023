@@ -5,7 +5,6 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    //backgroundColor: "pink",
   },
   header: {
     marginTop: 30,
@@ -15,12 +14,10 @@ export default StyleSheet.create({
   },
   footer: {
     marginTop: 20,
-    // tähän sama väri
     backgroundColor: "#7E93DA",
     flexDirection: "row",
   },
   title: {
-    // eri väri
     color: "#404659",
     fontWeight: "bold",
     flex: 1,
@@ -30,7 +27,6 @@ export default StyleSheet.create({
     fontFamily: "LugrasimoRegular",
   },
   author: {
-    // eri väri
     color: "#404659",
     fontWeight: "bold",
     flex: 1,
@@ -45,13 +41,11 @@ export default StyleSheet.create({
   },
 
   // Home.js
-
   label: {
     fontSize: 19,
     margin: 20,
     fontFamily: "RobotoRegular",
   },
-  // nimen inputin muotoilu
   nameInput: {
     borderWidth: 1,
     width: 150,
@@ -59,15 +53,11 @@ export default StyleSheet.create({
     fontSize: 24,
     textAlign: "center",
   },
-
   headerText: {
     fontSize: 19,
-    //fontWeight: "bold",
     marginTop: 15,
-    color: "red",
     fontFamily: "RobotoBold",
   },
-  // homen tekstikappaleen asettelu
   paragraph: {
     marginBottom: 5,
     marginLeft: 10,
@@ -86,12 +76,9 @@ export default StyleSheet.create({
   },
 
   // Gameboard
-  // yleis
   row: {
-    //marginTop: 20,
     padding: 10,
     marginBottom: 20,
-    //backgroundColor: "pink",
     textAlign: "center",
     justifyContent: "center",
   },
@@ -117,7 +104,6 @@ export default StyleSheet.create({
   statusText: {
     fontSize: 16,
     fontFamily: "RobotoRegular",
-    color: "purple",
   },
   cellPvm: {
     minWidth: 50,
@@ -126,6 +112,10 @@ export default StyleSheet.create({
   // scoreboard
   columnStyle: {
     width: 200,
+  },
+  boldedPoints: {
+    fontWeight: "bold",
+    fontSize: 16,
   },
 
   // tarviiko tätä?
