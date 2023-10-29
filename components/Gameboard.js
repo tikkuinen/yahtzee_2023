@@ -20,7 +20,7 @@ export default function Gameboard({ navigation, route }) {
   const [playerName, setPlayerName] = useState("");
   const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState(NBR_OF_THROWS);
   const [status, setStatus] = useState("Throw dices");
-  const [gameEndStatus, setGameEndStatus] = useState(false);
+  const [gameEndStatus, setGameEndStatus] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   // ovatko nopat kiinnitetty
   const [selectedDices, setSelectedDices] = useState(
@@ -51,6 +51,12 @@ export default function Gameboard({ navigation, route }) {
     });
     return unsubscribe;
   }, [navigation]);
+
+  // useEffect(() => {
+  //   setGameEndStatus(true);
+  // }, []);
+
+  console.log(gameEndStatus);
 
   // nopat
   const dicesRow = [];
@@ -184,6 +190,7 @@ export default function Gameboard({ navigation, route }) {
     if (allTrue) {
       // kaikki on valittu
       setStatus("Game over. All points selected.");
+      setGameEndStatus(true);
       // laske pisteet
       calculatePoints();
       savePlayerPoints();
@@ -199,6 +206,7 @@ export default function Gameboard({ navigation, route }) {
     selectedDices.fill(false);
     selectedDicePoints.fill(false);
     setIsVisible(false);
+    setGameEndStatus(false);
   };
 
   const calculatePoints = () => {
@@ -242,21 +250,23 @@ export default function Gameboard({ navigation, route }) {
   };
 
   const throwDices = () => {
+    setGameEndStatus(false);
     // tämä nollaa noppien valinnat kun uusi heitto tulee, testaa toimiiko ihan oikein
     if (nbrOfThrowsLeft == 3) {
       selectedDices.fill(false);
     }
 
-    if (nbrOfThrowsLeft == 0 && !gameEndStatus) {
+    if (nbrOfThrowsLeft == 0) {
       setStatus("Select points first!");
       return 1;
       // niin kauan kun on true, niin heittelee noita ja kun on false taas niin peli loppuu
       // ja mitä tää oikeastaan tekee
-    } else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
-      setGameEndStatus(true);
-      diceSpots.fill(0);
-      dicePointsTotal.fill(0);
     }
+    // else if (nbrOfThrowsLeft == 0 && gameEndStatus) {
+    //   setGameEndStatus(true);
+    //   diceSpots.fill(0);
+    //   dicePointsTotal.fill(0);
+    // }
 
     let spots = [...diceSpots];
 
@@ -282,16 +292,16 @@ export default function Gameboard({ navigation, route }) {
       <ScrollView>
         <View style={styles.gameboard}>
           <Container fluid>
-            {gameEndStatus && (
+            {gameEndStatus ? (
               <Row style={styles.row}>
                 <MaterialCommunityIcons
                   name="dice-multiple"
                   size={60}
                 ></MaterialCommunityIcons>
               </Row>
+            ) : (
+              <Row style={styles.row}>{dicesRow}</Row>
             )}
-
-            <Row style={styles.row}>{dicesRow}</Row>
             <Row style={styles.row}>
               {!isVisible && <Text>Throws left: {nbrOfThrowsLeft}</Text>}
             </Row>
