@@ -179,7 +179,7 @@ export default function Gameboard({ navigation, route }) {
 
   const restart = () => {
     // resetoi kaikki, ja tallentaa mut ei näytä sitten loppupisteitä ja status on game over
-    setGameEndStatus(false);
+    //setGameEndStatus(false);
     setStatus("Throw dices");
     dicePointsTotal.fill(0);
     selectedDices.fill(false);
@@ -300,10 +300,14 @@ export default function Gameboard({ navigation, route }) {
               <Text style={styles.statusText}>Total: {calculatePoints()}</Text>
             </Row>
             <Row style={styles.textRow}>
-              <Text>
-                You are {BONUS_POINTS_LIMIT - calculatePoints()} points away
-                from bonus.
-              </Text>
+              {calculatePoints() > BONUS_POINTS_LIMIT ? (
+                <Text>Bonus added!</Text>
+              ) : (
+                <Text>
+                  You are {BONUS_POINTS_LIMIT - calculatePoints()} points away
+                  from bonus.
+                </Text>
+              )}
             </Row>
             <Row style={styles.pointsRow}>{pointsRow}</Row>
             <Row style={styles.selectedPointRow}>{pointsToSelectRow}</Row>
