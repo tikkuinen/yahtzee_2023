@@ -6,6 +6,7 @@ import { NBR_OF_SCOREBOARD_ROWS, SCOREBOARD_KEY } from "../constants/Game";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "./Header";
 import Footer from "./Footer";
+import styles from "../styles/style";
 
 export default function Scoreboard({ navigation }) {
   const [scores, setScores] = useState([]);
@@ -76,8 +77,8 @@ export default function Scoreboard({ navigation }) {
         )}
       </View>
 
-      <Pressable onPress={() => clearScoreboard()}>
-        <Text>Tyhjennä</Text>
+      <Pressable style={styles.button} onPress={() => clearScoreboard()}>
+        <Text>Clear scoreboard</Text>
       </Pressable>
       <Footer />
     </>

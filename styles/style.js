@@ -3,21 +3,24 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    //backgroundColor: "pink",
   },
   header: {
     marginTop: 30,
     marginBottom: 15,
-    backgroundColor: "skyblue",
+    // tähän väri
+    backgroundColor: "#7E93DA",
     flexDirection: "row",
   },
   footer: {
     marginTop: 20,
-    backgroundColor: "skyblue",
+    // tähän sama väri
+    backgroundColor: "#7E93DA",
     flexDirection: "row",
   },
   title: {
-    color: "#fff",
+    // eri väri
+    color: "#404659",
     fontWeight: "bold",
     flex: 1,
     fontSize: 23,
@@ -25,7 +28,8 @@ export default StyleSheet.create({
     margin: 10,
   },
   author: {
-    color: "#fff",
+    // eri väri
+    color: "#404659",
     fontWeight: "bold",
     flex: 1,
     fontSize: 15,
@@ -38,10 +42,25 @@ export default StyleSheet.create({
     justifyContent: "center",
   },
 
+  // Home.js
+
+  label: {
+    fontSize: 19,
+    margin: 20,
+  },
   // nimen inputin muotoilu
   nameInput: {
     borderWidth: 1,
-    width: 100,
+    width: 150,
+    height: 40,
+    fontSize: 24,
+    textAlign: "center",
+  },
+
+  headerText: {
+    fontSize: 19,
+    fontWeight: "bold",
+    marginTop: 15,
   },
   // homen tekstikappaleen asettelu
   paragraph: {
@@ -49,6 +68,7 @@ export default StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginTop: 20,
+    fontSize: 16,
   },
   gameinfo: {
     backgroundColor: "#fff",
@@ -69,7 +89,7 @@ export default StyleSheet.create({
     margin: 30,
     flexDirection: "row",
     padding: 10,
-    backgroundColor: "#73CED6",
+    backgroundColor: "#D9C07E",
     width: 150,
     borderRadius: 15,
     justifyContent: "center",
@@ -79,4 +99,6 @@ export default StyleSheet.create({
     color: "#2B2B52",
     fontSize: 20,
   },
+  iconColorPrimary: "black",
+  iconColorSecondary: "gray",
 });

@@ -22,7 +22,7 @@ export default function Gameboard({ navigation, route }) {
   const [status, setStatus] = useState("Throw dices");
   const [gameEndStatus, setGameEndStatus] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  // Ovatko nopat kiinnitetty
+  // ovatko nopat kiinnitetty
   const [selectedDices, setSelectedDices] = useState(
     new Array(NBR_OF_DICES).fill(false)
   );
@@ -32,11 +32,10 @@ export default function Gameboard({ navigation, route }) {
   const [selectedDicePoints, setSelectedDicePoints] = useState(
     new Array(MAX_SPOT).fill(false)
   );
-  // Kerätyt pisteet
+  // kerätyt pisteet
   const [dicePointsTotal, setDicePointsTotal] = useState(
     new Array(MAX_SPOT).fill(0)
   );
-
   // tulostaulun pisteet
   const [scores, setScores] = useState([]);
 
@@ -50,7 +49,6 @@ export default function Gameboard({ navigation, route }) {
     const unsubscribe = navigation.addListener("focus", () => {
       getScoreboardData();
     });
-
     return unsubscribe;
   }, [navigation]);
 
@@ -107,7 +105,6 @@ export default function Gameboard({ navigation, route }) {
   }
 
   //////////////////////////////////
-  // sorttaa scoreboard
 
   // keskitä nappulat
   // fontit, koot tms.
@@ -115,6 +112,7 @@ export default function Gameboard({ navigation, route }) {
   // Tyhjennä -nappi (ei pakollinen)
   // muokkaa scoreboardin columnit että näkyy
   // joku otsikko tms. hienous sinne scoreboardille
+  // korjaa ajan näkyminen scoreboardilla
 
   // ei sais valita vääriä pisteitä eli ei niitä mitä ei ole nopista valittu, korjaa
   // bonuksen laskenta
@@ -134,7 +132,7 @@ export default function Gameboard({ navigation, route }) {
 
         points[i] = nbrOfDices * (i + 1);
       } else {
-        setStatus("laitoit jo pisteet");
+        setStatus("You've already set scores!");
       }
       setDicePointsTotal(points);
       setSelectedDicePoints(selectedPoints);
@@ -142,7 +140,7 @@ export default function Gameboard({ navigation, route }) {
       setNbrOfThrowsLeft(3);
       return points[i];
     } else {
-      setStatus("Heitä kaikki eka");
+      setStatus("Throw all three times first!");
     }
   };
 
@@ -166,20 +164,22 @@ export default function Gameboard({ navigation, route }) {
       let dices = [...selectedDices];
       dices[i] = selectedDices[i] ? false : true;
       setSelectedDices(dices);
+    } else {
+      setStatus("You have to throw dices first!");
     }
   };
 
   // tarkistaa onko peli loppu joka kerta kun heittojen määrä vaihtuu
   // vois olla ehkä myös gameendstatus
   useEffect(() => {
-    checkWinner();
+    checkEnd();
   }, [nbrOfThrowsLeft]);
 
   const allTrue = selectedDicePoints.every(function (element) {
     return element === true;
   });
 
-  const checkWinner = () => {
+  const checkEnd = () => {
     // jos kaikki pallurat on valittu, peli loppuu
     if (allTrue) {
       // kaikki on valittu
@@ -225,7 +225,7 @@ export default function Gameboard({ navigation, route }) {
       const jsonValue = JSON.stringify(newScore);
       await AsyncStorage.setItem(SCOREBOARD_KEY, jsonValue);
     } catch (e) {
-      console.log("virhe tallennuksessa" + e);
+      console.log("Save error" + e);
     }
   };
 
@@ -248,7 +248,7 @@ export default function Gameboard({ navigation, route }) {
     }
 
     if (nbrOfThrowsLeft == 0 && !gameEndStatus) {
-      setStatus("Valitse pisteet eka");
+      setStatus("Select points first!");
       return 1;
       // niin kauan kun on true, niin heittelee noita ja kun on false taas niin peli loppuu
       // ja mitä tää oikeastaan tekee
@@ -269,7 +269,7 @@ export default function Gameboard({ navigation, route }) {
     }
     setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
     setDiceSpots(spots);
-    setStatus("Heitä uudelleen");
+    setStatus("Throw again");
 
     if (nbrOfThrowsLeft == 1) {
       setStatus("Select points and throw dices again");
@@ -308,9 +308,9 @@ export default function Gameboard({ navigation, route }) {
           <Row>
             <Text>Total: {calculatePoints()}</Text>
           </Row>
-          <Row>
+          {/* <Row>
             <Text>Bonusinfo</Text>
-          </Row>
+          </Row> */}
         </Container>
         <Container fluid>
           <Row>{pointsRow}</Row>
@@ -318,10 +318,6 @@ export default function Gameboard({ navigation, route }) {
         <Container fluid>
           <Row>{pointsToSelectRow}</Row>
         </Container>
-
-        {/* <Pressable style={styles.button} onPress={() => savePlayerPoints()}>
-          <Text style={styles.buttonText}>Tallenna</Text>
-        </Pressable> */}
         <Text>Player: {playerName}</Text>
       </View>
       <Footer />
