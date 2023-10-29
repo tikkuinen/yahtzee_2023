@@ -10,7 +10,6 @@ export default StyleSheet.create({
   header: {
     marginTop: 30,
     marginBottom: 15,
-    // tähän väri
     backgroundColor: "#7E93DA",
     flexDirection: "row",
   },
@@ -25,9 +24,10 @@ export default StyleSheet.create({
     color: "#404659",
     fontWeight: "bold",
     flex: 1,
-    fontSize: 23,
+    fontSize: 28,
     textAlign: "center",
     margin: 10,
+    fontFamily: "LugrasimoRegular",
   },
   author: {
     // eri väri
@@ -49,6 +49,7 @@ export default StyleSheet.create({
   label: {
     fontSize: 19,
     margin: 20,
+    fontFamily: "RobotoRegular",
   },
   // nimen inputin muotoilu
   nameInput: {
@@ -61,8 +62,10 @@ export default StyleSheet.create({
 
   headerText: {
     fontSize: 19,
-    fontWeight: "bold",
+    //fontWeight: "bold",
     marginTop: 15,
+    color: "red",
+    fontFamily: "RobotoBold",
   },
   // homen tekstikappaleen asettelu
   paragraph: {
@@ -71,6 +74,7 @@ export default StyleSheet.create({
     marginRight: 10,
     marginTop: 20,
     fontSize: 16,
+    fontFamily: "RobotoRegular",
   },
   gameinfo: {
     backgroundColor: "#fff",
@@ -112,6 +116,16 @@ export default StyleSheet.create({
 
   statusText: {
     fontSize: 16,
+    fontFamily: "RobotoRegular",
+    color: "purple",
+  },
+  cellPvm: {
+    minWidth: 50,
+  },
+
+  // scoreboard
+  columnStyle: {
+    width: 200,
   },
 
   // tarviiko tätä?

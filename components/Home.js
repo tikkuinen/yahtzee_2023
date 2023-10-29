@@ -13,6 +13,7 @@ import {
 } from "../constants/Game";
 import Header from "./Header";
 import Footer from "./Footer";
+import { useFonts } from "expo-font";
 
 export default Home = ({ navigation }) => {
   const [playerName, setPlayerName] = useState("");
@@ -23,6 +24,16 @@ export default Home = ({ navigation }) => {
       setHasPlayerName(true);
     }
   };
+
+  const [loaded] = useFonts({
+    LugrasimoRegular: require("../assets/fonts/Lugrasimo-Regular.ttf"),
+    RobotoBold: require("../assets/fonts/Roboto-Bold.ttf"),
+    RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
     <>

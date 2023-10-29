@@ -13,7 +13,6 @@ import {
 } from "../constants/Game";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDate, getTime } from "./common/functions";
-import style from "../styles/style";
 
 let board = [];
 
@@ -111,13 +110,9 @@ export default function Gameboard({ navigation, route }) {
 
   //////////////////////////////////
 
-  // keskitä nappulat
-  // fontit, koot tms.
-  // omat värit
-  // Tyhjennä -nappi (ei pakollinen)
-  // muokkaa scoreboardin columnit että näkyy
-  // joku otsikko tms. hienous sinne scoreboardille
-  // korjaa ajan näkyminen scoreboardilla
+  // fontit
+  // boldaatko pisteet?
+  // joku otsikko tms. hienous sinne scoreboardille ja se ikoni
 
   // ei sais valita vääriä pisteitä eli ei niitä mitä ei ole nopista valittu, korjaa
   // bonuksen laskenta
