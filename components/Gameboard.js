@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Pressable } from "react-native";
+import { Text, View, Pressable, ScrollView } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Container, Row, Col } from "react-native-flex-grid";
 import styles from "../styles/style";
@@ -279,47 +279,52 @@ export default function Gameboard({ navigation, route }) {
   return (
     <>
       <Header />
-
-      <View style={styles.gameboard}>
-        <Container fluid>
-          <Row>
-            <MaterialCommunityIcons
-              name="dice-multiple"
-              size={60}
-            ></MaterialCommunityIcons>
-          </Row>
-
-          <Row>{dicesRow}</Row>
-          <Row>{!isVisible && <Text>Throws left: {nbrOfThrowsLeft}</Text>}</Row>
-          <Row>
-            <Text>{status}</Text>
-          </Row>
-          <Row>
-            {isVisible ? (
-              <Pressable style={styles.button} onPress={() => restart()}>
-                <Text style={styles.buttonText}>Play again</Text>
-              </Pressable>
-            ) : (
-              <Pressable style={styles.button} onPress={() => throwDices()}>
-                <Text style={styles.buttonText}>Throw dices</Text>
-              </Pressable>
+      <ScrollView>
+        <View style={styles.gameboard}>
+          <Container fluid>
+            {gameEndStatus && (
+              <Row style={styles.row}>
+                <MaterialCommunityIcons
+                  name="dice-multiple"
+                  size={60}
+                ></MaterialCommunityIcons>
+              </Row>
             )}
-          </Row>
-          <Row>
-            <Text>Total: {calculatePoints()}</Text>
-          </Row>
-          {/* <Row>
+
+            <Row style={styles.row}>{dicesRow}</Row>
+            <Row style={styles.row}>
+              {!isVisible && <Text>Throws left: {nbrOfThrowsLeft}</Text>}
+            </Row>
+            <Row style={styles.row}>
+              <Text>{status}</Text>
+            </Row>
+            <Row style={styles.row}>
+              {isVisible ? (
+                <Pressable style={styles.button} onPress={() => restart()}>
+                  <Text style={styles.buttonText}>Play again</Text>
+                </Pressable>
+              ) : (
+                <Pressable style={styles.button} onPress={() => throwDices()}>
+                  <Text style={styles.buttonText}>Throw dices</Text>
+                </Pressable>
+              )}
+            </Row>
+            <Row style={styles.row}>
+              <Text>Total: {calculatePoints()}</Text>
+            </Row>
+            {/* <Row>
             <Text>Bonusinfo</Text>
           </Row> */}
-        </Container>
-        <Container fluid>
-          <Row>{pointsRow}</Row>
-        </Container>
-        <Container fluid>
-          <Row>{pointsToSelectRow}</Row>
-        </Container>
-        <Text>Player: {playerName}</Text>
-      </View>
+          </Container>
+          <Container fluid>
+            <Row style={styles.row}>{pointsRow}</Row>
+          </Container>
+          <Container fluid>
+            <Row style={styles.row}>{pointsToSelectRow}</Row>
+          </Container>
+          <Text>Player: {playerName}</Text>
+        </View>
+      </ScrollView>
       <Footer />
     </>
   );

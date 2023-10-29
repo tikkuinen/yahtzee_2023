@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import { DataTable } from "react-native-paper";
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, ScrollView } from "react-native";
 import { NBR_OF_SCOREBOARD_ROWS, SCOREBOARD_KEY } from "../constants/Game";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Header from "./Header";
@@ -48,38 +48,40 @@ export default function Scoreboard({ navigation }) {
   return (
     <>
       <Header />
-      <View>
-        {scores.length === 0 ? (
-          <Text>Scoreboard is empty</Text>
-        ) : (
-          scores.map(
-            (player, index) =>
-              index < NBR_OF_SCOREBOARD_ROWS && (
-                <DataTable.Row key={player.key}>
-                  <DataTable.Cell>
-                    <Text>{index + 1}</Text>
-                  </DataTable.Cell>
-                  <DataTable.Cell>
-                    <Text>{player.name}</Text>
-                  </DataTable.Cell>
-                  <DataTable.Cell>
-                    <Text>{player.date}</Text>
-                  </DataTable.Cell>
-                  <DataTable.Cell>
-                    <Text>{player.time}</Text>
-                  </DataTable.Cell>
-                  <DataTable.Cell>
-                    <Text>{player.points}</Text>
-                  </DataTable.Cell>
-                </DataTable.Row>
-              )
-          )
-        )}
-      </View>
+      <ScrollView>
+        <View>
+          {scores.length === 0 ? (
+            <Text>Scoreboard is empty</Text>
+          ) : (
+            scores.map(
+              (player, index) =>
+                index < NBR_OF_SCOREBOARD_ROWS && (
+                  <DataTable.Row key={player.key}>
+                    <DataTable.Cell>
+                      <Text>{index + 1}</Text>
+                    </DataTable.Cell>
+                    <DataTable.Cell>
+                      <Text>{player.name}</Text>
+                    </DataTable.Cell>
+                    <DataTable.Cell>
+                      <Text>{player.date}</Text>
+                    </DataTable.Cell>
+                    <DataTable.Cell>
+                      <Text>{player.time}</Text>
+                    </DataTable.Cell>
+                    <DataTable.Cell>
+                      <Text>{player.points}</Text>
+                    </DataTable.Cell>
+                  </DataTable.Row>
+                )
+            )
+          )}
+        </View>
 
-      <Pressable style={styles.button} onPress={() => clearScoreboard()}>
-        <Text>Clear scoreboard</Text>
-      </Pressable>
+        <Pressable style={styles.button} onPress={() => clearScoreboard()}>
+          <Text>Clear scoreboard</Text>
+        </Pressable>
+      </ScrollView>
       <Footer />
     </>
   );

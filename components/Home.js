@@ -1,12 +1,5 @@
-import React, { useState, useContext } from "react";
-import {
-  Text,
-  TextInput,
-  View,
-  Pressable,
-  Keyboard,
-  ScrollView,
-} from "react-native";
+import React, { useState } from "react";
+import { Text, TextInput, View, Pressable, ScrollView } from "react-native";
 
 import styles from "../styles/style";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -28,7 +21,6 @@ export default Home = ({ navigation }) => {
   const handlePlayerName = (value) => {
     if (value.trim().length > 0) {
       setHasPlayerName(true);
-      //Keyboard.dismiss;
     }
   };
 

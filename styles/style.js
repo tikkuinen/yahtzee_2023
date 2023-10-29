@@ -3,6 +3,8 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     //backgroundColor: "pink",
   },
   header: {
@@ -79,8 +81,11 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   row: {
-    marginTop: 20,
+    //marginTop: 20,
     padding: 10,
+    //backgroundColor: "pink",
+    textAlign: "center",
+    justifyContent: "center",
   },
   flex: {
     flexDirection: "row",
