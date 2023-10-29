@@ -39,7 +39,10 @@ export default function Scoreboard({ navigation }) {
     }
   };
 
-  // pitää sortata isoimmasta pienimpään
+  // Tuloslistan sorttaus suurimmasta pienimpään
+  if (scores.length > 0) {
+    scores.sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
+  }
 
   return (
     <>
