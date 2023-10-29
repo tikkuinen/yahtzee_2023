@@ -80,18 +80,46 @@ export default StyleSheet.create({
     fontSize: 20,
     marginTop: 10,
   },
+
+  // Gameboard
+  // yleis
   row: {
     //marginTop: 20,
     padding: 10,
+    marginBottom: 20,
     //backgroundColor: "pink",
     textAlign: "center",
     justifyContent: "center",
   },
+  textRow: {
+    textAlign: "center",
+    justifyContent: "center",
+  },
+  dicesRow: {
+    marginTop: 30,
+    marginBottom: 15,
+  },
+  pointsRow: {
+    marginTop: 20,
+  },
+  pointColumn: {
+    alignItems: "center",
+  },
+  selectedPointRow: {
+    marginTop: 0,
+    marginBottom: 20,
+  },
+
+  statusText: {
+    fontSize: 16,
+  },
+
+  // tarviiko tätä?
   flex: {
     flexDirection: "row",
   },
   button: {
-    margin: 30,
+    marginTop: 30,
     flexDirection: "row",
     padding: 10,
     backgroundColor: "#D9C07E",
@@ -105,5 +133,6 @@ export default StyleSheet.create({
     fontSize: 20,
   },
   iconColorPrimary: "black",
-  iconColorSecondary: "gray",
+  diceColorSelected: "black",
+  diceColorUnselected: "#7F8599",
 });

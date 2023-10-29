@@ -13,6 +13,7 @@ import {
 } from "../constants/Game";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDate, getTime } from "./common/functions";
+import style from "../styles/style";
 
 let board = [];
 
@@ -52,12 +53,6 @@ export default function Gameboard({ navigation, route }) {
     return unsubscribe;
   }, [navigation]);
 
-  // useEffect(() => {
-  //   setGameEndStatus(true);
-  // }, []);
-
-  console.log(gameEndStatus);
-
   // nopat
   const dicesRow = [];
   for (let i = 0; i < NBR_OF_DICES; i++) {
@@ -79,7 +74,7 @@ export default function Gameboard({ navigation, route }) {
   const pointsRow = [];
   for (let i = 0; i < MAX_SPOT; i++) {
     pointsRow.push(
-      <Col key={"pointsRow" + i}>
+      <Col style={styles.pointColumn} key={"pointsRow" + i}>
         <Text key={"pointsRow" + i}>{getSpotTotal(i)}</Text>
       </Col>
     );
@@ -103,11 +98,15 @@ export default function Gameboard({ navigation, route }) {
   }
 
   function getDiceColor(i) {
-    return selectedDices[i] ? "black" : "steelblue";
+    return selectedDices[i]
+      ? styles.diceColorSelected
+      : styles.diceColorUnselected;
   }
 
   function getDicePointsColor(i) {
-    return selectedDicePoints[i] && !gameEndStatus ? "black" : "steelblue";
+    return selectedDicePoints[i] && !gameEndStatus
+      ? styles.diceColorSelected
+      : styles.diceColorUnselected;
   }
 
   //////////////////////////////////
@@ -296,17 +295,21 @@ export default function Gameboard({ navigation, route }) {
               <Row style={styles.row}>
                 <MaterialCommunityIcons
                   name="dice-multiple"
-                  size={60}
+                  size={90}
                 ></MaterialCommunityIcons>
               </Row>
             ) : (
-              <Row style={styles.row}>{dicesRow}</Row>
+              <Row style={styles.dicesRow}>{dicesRow}</Row>
             )}
-            <Row style={styles.row}>
-              {!isVisible && <Text>Throws left: {nbrOfThrowsLeft}</Text>}
+            <Row style={styles.textRow}>
+              {!isVisible && (
+                <Text style={styles.statusText}>
+                  Throws left: {nbrOfThrowsLeft}
+                </Text>
+              )}
             </Row>
-            <Row style={styles.row}>
-              <Text>{status}</Text>
+            <Row style={styles.textRow}>
+              <Text style={styles.statusText}>{status}</Text>
             </Row>
             <Row style={styles.row}>
               {isVisible ? (
@@ -319,20 +322,18 @@ export default function Gameboard({ navigation, route }) {
                 </Pressable>
               )}
             </Row>
-            <Row style={styles.row}>
-              <Text>Total: {calculatePoints()}</Text>
+            <Row style={styles.textRow}>
+              <Text style={styles.statusText}>Total: {calculatePoints()}</Text>
             </Row>
             {/* <Row>
             <Text>Bonusinfo</Text>
           </Row> */}
+            <Row style={styles.pointsRow}>{pointsRow}</Row>
+            <Row style={styles.selectedPointRow}>{pointsToSelectRow}</Row>
+            <Row style={styles.textRow}>
+              <Text style={styles.statusText}>Player: {playerName}</Text>
+            </Row>
           </Container>
-          <Container fluid>
-            <Row style={styles.row}>{pointsRow}</Row>
-          </Container>
-          <Container fluid>
-            <Row style={styles.row}>{pointsToSelectRow}</Row>
-          </Container>
-          <Text>Player: {playerName}</Text>
         </View>
       </ScrollView>
       <Footer />
